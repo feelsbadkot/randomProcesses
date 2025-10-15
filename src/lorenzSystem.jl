@@ -2,7 +2,7 @@ module LorenzSystem
 
 using DifferentialEquations, Plots, LaTeXStrings, Measures
 
-export solve_lorenz, plot_time_series, plot_phase_portrait
+export solve_lorenz, solution_to_arrays, plot_time_series, plot_phase_portrait
 
 const PLOT_INDEX_MAP = Dict(
     "X" => [1], "1" => [1], 1 => [1],
@@ -37,12 +37,17 @@ function solve_lorenz(u0, p, tspan)
     return solve(prob)
 end
 
+function solution_to_dict(sol)
+    return Dict("t" => sol.t, "X" => sol[1, :], "Y" => sol[2, :], "Z" => sol[3, :])
+end
+
 function plot_time_series(sol, index)
     default(fontfamily="Computer Modern", titlefontsize=14, labelfontsize=12, legendfontsize=12, tickfontsize=10)
     time_series = (plot(sol, plotdensity = 10000, lw = 1.25, idxs = (0, 1), xlabel = L"t", ylabel = L"X(t)", legend = false, color="black", bottom_margin=3mm, left_margin=3mm, right_margin=3mm),
                    plot(sol, plotdensity = 10000, lw = 1.25, idxs = (0, 2), xlabel = L"t", ylabel = L"Y(t)", legend = false, color="black", bottom_margin=3mm, left_margin=3mm, right_margin=3mm), 
-                   plot(sol, plotdensity = 10000, lw = 1.25, idxs = (0, 3), xlabel = L"t", ylabel = L"Z(t)", legend = false, color="black", bottom_margin=3mm, left_margin=3mm, right_margin=3mm))
-    plot_indices = get(PLOT_INDEX_MAP, index, [1, 2, 3]) 
+                   plot(sol, plotdensity = 10000, lw = 1.25, idxs = (0, 3), xlabel = L"t", ylabel = L"Z(t)", legend = false, color="black", bottom_margin=3mm, left_margin=3mm, right_margin=3mm),
+                   plot(sol, plotdensity = 10000, lw = 1.25, xlabel = L"t", legend = false, bottom_margin=3mm, left_margin=3mm, right_margin=3mm))
+    plot_indices = get(PLOT_INDEX_MAP, index, [1, 2, 3, 4]) 
     return time_series[plot_indices]
 end
 
@@ -54,7 +59,7 @@ function plot_phase_portrait(sol, index)
                    plot(sol, plotdensity=10000, lw=1.25, idxs=(2, 3), xlabel=L"Y", ylabel=L"Z", legend=false, color="black", bottom_margin=3mm, left_margin=3mm, right_margin=3mm),
                    plot(sol, plotdensity=10000, lw=1, idxs=(1, 2, 3), xlabel=L"X", ylabel=L"Y", zlabel=L"Z", legend=false, color="black"))
     
-    plot_indices = get(PLOT_INDEX_MAP, index, [1, 2, 3])  
+    plot_indices = get(PLOT_INDEX_MAP, index, [1, 2, 3, 4])  
     return phase_plots[plot_indices]
 end
 
