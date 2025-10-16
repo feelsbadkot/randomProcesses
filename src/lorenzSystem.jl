@@ -2,7 +2,7 @@ module LorenzSystem
 
 using DifferentialEquations, Plots, LaTeXStrings, Measures
 
-export solve_lorenz, solution_to_arrays, plot_time_series, plot_phase_portrait
+export solve_lorenz, solution_to_dict, plot_time_series, plot_phase_portrait
 
 const PLOT_INDEX_MAP = Dict(
     "X" => [1], "1" => [1], 1 => [1],
@@ -34,19 +34,20 @@ end
 
 function solve_lorenz(u0, p, tspan)
     prob = ODEProblem(lorenz!, u0, tspan, p)
-    return solve(prob)
+    t_output = range(tspan[1], tspan[2], step=0.01)
+    return solve(prob, saveat=t_output) 
 end
 
 function solution_to_dict(sol)
     return Dict("t" => sol.t, "X" => sol[1, :], "Y" => sol[2, :], "Z" => sol[3, :])
 end
 
-function plot_time_series(sol, index)
+function plot_time_series(sol, index, limits=extrema(sol.t))
     default(fontfamily="Computer Modern", titlefontsize=14, labelfontsize=12, legendfontsize=12, tickfontsize=10)
-    time_series = (plot(sol, plotdensity = 10000, lw = 1.25, idxs = (0, 1), xlabel = L"t", ylabel = L"X(t)", legend = false, color="black", bottom_margin=3mm, left_margin=3mm, right_margin=3mm),
-                   plot(sol, plotdensity = 10000, lw = 1.25, idxs = (0, 2), xlabel = L"t", ylabel = L"Y(t)", legend = false, color="black", bottom_margin=3mm, left_margin=3mm, right_margin=3mm), 
-                   plot(sol, plotdensity = 10000, lw = 1.25, idxs = (0, 3), xlabel = L"t", ylabel = L"Z(t)", legend = false, color="black", bottom_margin=3mm, left_margin=3mm, right_margin=3mm),
-                   plot(sol, plotdensity = 10000, lw = 1.25, xlabel = L"t", legend = false, bottom_margin=3mm, left_margin=3mm, right_margin=3mm))
+    time_series = (plot(sol, plotdensity = 10000, lw = 1.25, idxs = (0, 1), xlabel = L"t", ylabel = L"X(t)", xlims=limits, legend = false, color="black", bottom_margin=3mm, left_margin=3mm, right_margin=3mm),
+                   plot(sol, plotdensity = 10000, lw = 1.25, idxs = (0, 2), xlabel = L"t", ylabel = L"Y(t)", xlims=limits, legend = false, color="black", bottom_margin=3mm, left_margin=3mm, right_margin=3mm), 
+                   plot(sol, plotdensity = 10000, lw = 1.25, idxs = (0, 3), xlabel = L"t", ylabel = L"Z(t)", xlims=limits, legend = false, color="black", bottom_margin=3mm, left_margin=3mm, right_margin=3mm),
+                   plot(sol, plotdensity = 10000, lw = 1.25, xlabel = L"t", xlims=limits, legend = false, bottom_margin=3mm, left_margin=3mm, right_margin=3mm))
     plot_indices = get(PLOT_INDEX_MAP, index, [1, 2, 3, 4]) 
     return time_series[plot_indices]
 end
