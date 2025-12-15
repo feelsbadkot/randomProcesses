@@ -34,8 +34,8 @@ end
 
 function solve_lorenz(u0, p, tspan)
     prob = ODEProblem(lorenz!, u0, tspan, p)
-    t_output = range(tspan[1], tspan[2], step=1e-4)
-    return solve(prob, dt=1e-4, saveat=t_output) 
+    t_output = range(tspan[1], tspan[2], step=1e-3)
+    return solve(prob, saveat=t_output) 
 end
 
 function solution_to_dict(sol)
