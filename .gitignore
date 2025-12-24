@@ -31,3 +31,5 @@ tests
 results
 logs
 output*
+venv
+venv/*

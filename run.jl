@@ -4,7 +4,7 @@ include("src/returnTimeStatistics.jl")
 import .LorenzSystem as LS
 import .ReturnTimeStatistics as RTS
 
-using HDF5
+# using HDF5
 
 struct LorenzData{T<:Real}
     σ::T
